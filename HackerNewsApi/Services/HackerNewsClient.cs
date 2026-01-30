@@ -53,6 +53,7 @@ public sealed class HackerNewsClient : IHackerNewsClient
         var ids = await _httpClient.GetFromJsonAsync<List<long>>("beststories.json", cancellationToken)
             ?? new List<long>();
 
+        //Chace Item ids for a minute
         _cache.Set(
             BestStoriesCacheKey,
             ids,
@@ -63,7 +64,6 @@ public sealed class HackerNewsClient : IHackerNewsClient
 
     private async Task<HackerNewsItem?> GetStoryAsync(long id, CancellationToken cancellationToken)
     {
-        //Chace the Item ids for a minute
         var cacheKey = $"hackernews.item.{id}";
         if (_cache.TryGetValue(cacheKey, out HackerNewsItem? cachedItem))
         {
@@ -76,6 +76,7 @@ public sealed class HackerNewsClient : IHackerNewsClient
             return null;
         }
 
+        //Chace payloads for 5 minute
         _cache.Set(
             cacheKey,
             item,
